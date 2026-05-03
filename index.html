@@ -22,7 +22,7 @@
       cursor: pointer;
     }
     .glitch {
-      animation: glitch 0.1s infinite;
+      animation: glitch 0.08s infinite;
     }
     @keyframes glitch {
       0% { transform: translate(2px, -2px); }
@@ -47,7 +47,7 @@
 <body>
 
 <div id="screen">
-  <h2>Initializing scan... 👀</h2>
+  <h2>Initializing secure scan... 👀</h2>
   <div id="progress"><div id="bar"></div></div>
 </div>
 
@@ -65,12 +65,12 @@ let loading = setInterval(() => {
     width++;
     bar.style.width = width + "%";
   }
-}, 30);
+}, 25);
 
 function showQuestion() {
   document.getElementById("screen").innerHTML = `
     <h2>Scan complete ✅</h2>
-    <h1>Do you love Guna? 😏</h1>
+    <h1>Do you love Gunasagar G? 😏</h1>
     <button onclick="yes()">YES ❤️</button>
     <button onclick="no()">NO 😈</button>
   `;
@@ -78,7 +78,11 @@ function showQuestion() {
 
 function yes() {
   document.body.style.background = "pink";
-  document.body.innerHTML = "<h1>I LOVE YOU TOOO ❤️🥺</h1><p>Got you 😏<br>Prank by Guna</p>";
+  document.body.innerHTML = "<h1>I LOVE YOU TOOO ❤️🥺</h1><p>Wait... revealing identity...</p>";
+
+  setTimeout(() => {
+    document.body.innerHTML = "<h1>😂 GOT YOU!</h1><p>He loves you Too😎</p>";
+  }, 3000);
 }
 
 function no() {
@@ -93,13 +97,17 @@ function no() {
   }, 1500);
 
   setTimeout(() => {
-    document.body.innerHTML += "<h2>Result: YOU ARE LYING 😂</h2>";
+    document.body.innerHTML += "<h2>Deep scan running... 👁️</h2>";
   }, 3000);
 
   setTimeout(() => {
+    document.body.innerHTML += "<h2>Result: YOU STILL LOVE HIM 😂</h2>";
+  }, 4500);
+
+  setTimeout(() => {
     document.body.classList.remove("glitch");
-    document.body.innerHTML = "<h1>Nice try 😏</h1><p>You still love me 😌<br>Prank by Guna</p>";
-  }, 5000);
+    document.body.innerHTML = "<h1>😂 GOT YOU!</h1><p>This was a prank by Gunasagar G 😎</p>";
+  }, 6500);
 }
 </script>
 
