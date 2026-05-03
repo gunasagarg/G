@@ -1,399 +1,238 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>System Security Alert</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      background: #0a0e27;
-      color: #00ff41;
-      font-family: 'Courier New', monospace;
-      overflow: hidden;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do You Love Me? 💕</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .terminal-header {
-      background: #1a1f3a;
-      border-bottom: 2px solid #00ff41;
-      padding: 10px 15px;
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-    .window-controls {
-      display: flex;
-      gap: 8px;
-    }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            animation: fadeIn 1s ease-in;
+        }
 
-    .control-btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      cursor: pointer;
-      background: #555;
-      border: none;
-    }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .control-btn.close:hover { background: #ff5f56; }
-    .control-btn.minimize:hover { background: #ffbd2e; }
-    .control-btn.maximize:hover { background: #27c93f; }
+        .heart {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: heartbeat 1.5s infinite;
+        }
 
-    #screen {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      line-height: 1.6;
-      font-size: 13px;
-    }
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.3);
+            }
+            50% {
+                transform: scale(1);
+            }
+        }
 
-    .log-line {
-      margin-bottom: 5px;
-      opacity: 0;
-      animation: fadeIn 0.3s forwards;
-    }
+        h1 {
+            color: #764ba2;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
+        .from {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
 
-    .success { color: #00ff41; }
-    .error { color: #ff4444; }
-    .warning { color: #ffaa00; }
-    .info { color: #00aaff; }
-    .critical { 
-      color: #ff0000; 
-      font-weight: bold;
-      text-shadow: 0 0 10px #ff0000;
-    }
+        .message {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
 
-    .glitch {
-      animation: glitch 0.15s infinite;
-    }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-    @keyframes glitch {
-      0% { transform: translate(2px, -2px); }
-      25% { transform: translate(-2px, 2px); }
-      50% { transform: translate(2px, 2px); }
-      75% { transform: translate(-2px, -2px); }
-      100% { transform: translate(0, 0); }
-    }
+        button {
+            padding: 15px 40px;
+            font-size: 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
 
-    .ip-display {
-      background: #1a1f3a;
-      border: 1px solid #00ff41;
-      padding: 8px;
-      margin: 10px 0;
-      font-size: 12px;
-      word-break: break-all;
-    }
+        .yes-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
 
-    .progress-bar {
-      width: 100%;
-      height: 20px;
-      background: #1a1f3a;
-      border: 1px solid #00ff41;
-      margin: 10px 0;
-      overflow: hidden;
-    }
+        .yes-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+        }
 
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #00ff41, #00aa00);
-      width: 0%;
-      box-shadow: 0 0 10px #00ff41;
-    }
+        .yes-btn:active {
+            transform: scale(0.98);
+        }
 
-    .button-group {
-      margin: 20px 0;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+        .no-btn {
+            background: #ddd;
+            color: #555;
+            position: relative;
+        }
 
-    button {
-      padding: 10px 20px;
-      background: #1a1f3a;
-      color: #00ff41;
-      border: 2px solid #00ff41;
-      cursor: pointer;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      transition: all 0.3s;
-    }
+        .no-btn:hover {
+            background: #ccc;
+            transform: translate(10px, -10px);
+        }
 
-    button:hover {
-      background: #00ff41;
-      color: #0a0e27;
-      box-shadow: 0 0 20px #00ff41;
-    }
+        .success-message {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            color: #2e7d32;
+            font-size: 18px;
+            animation: slideIn 0.5s ease;
+        }
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .blink {
-      animation: blink 0.7s infinite;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-
-    .file-list {
-      background: #1a1f3a;
-      border: 1px solid #00ff41;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 12px;
-    }
-
-    .divider {
-      border-top: 1px solid #00ff41;
-      margin: 15px 0;
-    }
-
-    .hacker-text {
-      font-weight: bold;
-      color: #ff4444;
-      text-shadow: 0 0 5px #ff4444;
-    }
-  </style>
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-
-<div class="terminal-header">
-  <span>root@security-system ~ $</span>
-  <div class="window-controls">
-    <button class="control-btn minimize"></button>
-    <button class="control-btn maximize"></button>
-    <button class="control-btn close"></button>
-  </div>
-</div>
-
-<div id="screen"></div>
-
-<audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
-
-<script>
-const screen = document.getElementById("screen");
-const beep = document.getElementById("beep");
-let lineDelay = 0;
-
-function addLog(text, type = 'info', delay = 100) {
-  lineDelay += delay;
-  setTimeout(() => {
-    const line = document.createElement('div');
-    line.className = `log-line ${type}`;
-    line.innerHTML = text;
-    screen.appendChild(line);
-    screen.scrollTop = screen.scrollHeight;
-  }, lineDelay);
-}
-
-function addDivider() {
-  lineDelay += 100;
-  setTimeout(() => {
-    const div = document.createElement('div');
-    div.className = 'divider';
-    screen.appendChild(div);
-  }, lineDelay);
-}
-
-function getRandomIP() {
-  return `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
-}
-
-function startPrank() {
-  // Initial system check
-  addLog('[*] Initializing Security Analysis Protocol...', 'info', 0);
-  addLog('[*] System: Linux Kernel 5.15.0-84-generic', 'success', 150);
-  addLog('[*] Scanning network interfaces...', 'info', 150);
-  
-  addLog(`[+] eth0: ${getRandomIP()}`, 'success', 150);
-  addLog(`[+] wlan0: ${getRandomIP()}`, 'success', 150);
-  addLog('[*] Running threat detection...', 'warning', 150);
-  addLog('[!] Unusual activity detected!', 'critical', 200);
-  
-  addDivider();
-  
-  addLog('[ALERT] Unauthorized access attempt detected from multiple IPs', 'critical', 150);
-  
-  setTimeout(() => {
-    beep.play().catch(() => {});
-  }, lineDelay);
-  
-  addLog('[*] IP Address: ' + getRandomIP(), 'warning', 200);
-  addLog('[*] IP Address: ' + getRandomIP(), 'warning', 150);
-  addLog('[*] IP Address: ' + getRandomIP(), 'warning', 150);
-  
-  addDivider();
-  
-  addLog('[*] Analyzing attack vector...', 'info', 200);
-  addLog('[+] Malware signature detected: TROJAN.WIN32.PRANK', 'critical', 150);
-  addLog('[+] Origin: Gunasagar G Network', 'error', 150);
-  addLog('[!] This is a PRANK attack specifically targeting you!', 'critical', 150);
-  
-  addDivider();
-  
-  addLog('[*] Scanning disk...', 'info', 150);
-  addLog('[+] /home/user/documents', 'success', 100);
-  addLog('[+] /home/user/downloads', 'success', 100);
-  addLog('[+] /home/user/desktop', 'success', 100);
-  
-  addLog('[!] Sensitive files detected', 'warning', 150);
-  
-  addDivider();
-  
-  // Progress simulation
-  setTimeout(() => {
-    screen.innerHTML += `
-      <div style="margin: 20px 0;">
-        <div>Vulnerability Assessment: <span class="blink">RUNNING</span></div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progBar"></div>
+    <div class="container">
+        <div class="heart">❤️</div>
+        <h1>Do You Love Me?</h1>
+        <div class="from">- gunasagar G 💕</div>
+        <p class="message">
+            I know this might be cheesy, but I had to ask... 
+            <br><br>
+            Will you be my valentine? 💑
+        </p>
+        
+        <div class="buttons">
+            <button class="yes-btn" onclick="handleYes()">Yes 💕</button>
+            <button class="no-btn" onclick="handleNo()">No</button>
         </div>
-      </div>
-    `;
-    
-    let progress = 0;
-    const progInterval = setInterval(() => {
-      progress += Math.random() * 25;
-      if (progress > 100) progress = 100;
-      document.getElementById('progBar').style.width = progress + '%';
-      
-      if (progress >= 100) {
-        clearInterval(progInterval);
-        finalPhase();
-      }
-    }, 300);
-  }, lineDelay + 500);
-}
 
-function finalPhase() {
-  addDivider();
-  addLog('[CRITICAL] System Integrity Compromised!', 'critical', 150);
-  addLog('[!] Ransom message received from attacker...', 'error', 150);
-  
-  addDivider();
-  
-  setTimeout(() => {
-    screen.innerHTML += `
-      <div style="text-align: center; margin: 30px 0; padding: 20px; border: 2px solid #ff4444; background: #1a0000;">
-        <div class="hacker-text" style="font-size: 18px;">⚠️ RANSOM DEMAND ⚠️</div>
-        <br>
-        <div style="color: #ff4444; font-size: 16px; margin: 20px 0;">
-          ATTENTION USER!
+        <div class="success-message" id="successMessage">
+            ✨ I'm the happiest person! You just made my day! ✨
+            <br><br>
+            gunasagar will know you said YES! 💕
         </div>
-        <div style="color: #00ff41; margin: 15px 0;">
-          Only one person can save your system...
-        </div>
-        <div style="color: #ffaa00; font-size: 14px; margin: 20px 0; font-weight: bold;">
-          You must answer honestly:
-        </div>
-        <div style="color: #00aaff; font-size: 18px; margin: 20px 0; font-weight: bold;">
-          "Do you think Gunasagar G is awesome?" 😎
-        </div>
-      </div>
-      <div class="button-group" style="justify-content: center;">
-        <button onclick="handleYes()">ABSOLUTELY YES ✅</button>
-        <button onclick="handleNo()">NOPE 😈</button>
-      </div>
-    `;
-  }, lineDelay + 500);
-}
+    </div>
 
-function handleYes() {
-  screen.innerHTML = '';
-  lineDelay = 0;
-  
-  addLog('[SUCCESS] Correct answer detected!', 'success', 0);
-  addLog('[+] Initializing system recovery...', 'success', 150);
-  addLog('[+] Decrypting files: ████████████████████ 100%', 'success', 150);
-  addLog('[+] Removing malware signature...', 'success', 150);
-  
-  addDivider();
-  
-  addLog('[SYSTEM MESSAGE]', 'info', 150);
-  addLog('You have excellent taste! 😎', 'success', 150);
-  addLog('Gunasagar G thinks you\'re awesome too! ❤️', 'success', 150);
-  addLog('This was all a harmless prank. System is safe.', 'warning', 150);
-  
-  setTimeout(() => {
-    screen.innerHTML += `
-      <div style="text-align: center; margin: 40px 0; padding: 30px; border: 2px solid #00ff41;">
-        <div style="font-size: 24px; color: #00ff41; margin: 20px 0;">😂 YOU GOT PRANKED! 😂</div>
-        <div style="color: #00aaff; font-size: 16px; margin: 20px 0;">
-          Your friend Gunasagar G sends their regards! 🎉
-        </div>
-      </div>
-    `;
-  }, lineDelay + 500);
-}
+    <script>
+        // Initialize EmailJS (Optional - for notifications)
+        // emailjs.init("YOUR_PUBLIC_KEY_HERE");
 
-function handleNo() {
-  screen.innerHTML = '';
-  lineDelay = 0;
-  
-  addLog('[ERROR] WRONG ANSWER DETECTED!', 'critical', 0);
-  
-  setTimeout(() => beep.play().catch(() => {}), 500);
-  
-  addLog('[!] System entering critical state...', 'critical', 200);
-  addLog('[!] Encryption protocols engaged', 'error', 150);
-  addLog('[!] DO NOT TURN OFF THE COMPUTER', 'critical', 150);
-  
-  addDivider();
-  
-  const glitchDiv = document.createElement('div');
-  glitchDiv.className = 'glitch';
-  glitchDiv.style.marginTop = '30px';
-  glitchDiv.innerHTML = '<div style="font-size: 20px; color: #ff0000;">CORRUPTING DATA...</div>';
-  screen.appendChild(glitchDiv);
-  
-  setTimeout(() => {
-    addLog('[+] Attempting deep scan of your preferences...', 'warning', 200);
-    addLog('[+] Analyzing browser history...', 'warning', 150);
-    addLog('[+] Cross-referencing with social media...', 'warning', 150);
-    addLog('[+] Running AI sentiment analysis...', 'warning', 150);
-    
-    addDivider();
-    
-    addLog('[RESULT] Scan complete!', 'success', 200);
-    addLog('[+] Hidden preference detected: YOU DO LIKE GUNASAGAR G', 'critical', 150);
-    addLog('[!] Lying detected. Not cool! 😂', 'error', 150);
-    
-    setTimeout(() => {
-      screen.innerHTML += `
-        <div style="text-align: center; margin: 40px 0; padding: 30px; border: 2px solid #00ff41;">
-          <div style="font-size: 24px; color: #ff4444; margin: 20px 0;">😂 CAUGHT RED-HANDED! 😂</div>
-          <div style="color: #00aaff; font-size: 16px; margin: 20px 0;">
-            Deep scan reveals the truth: You secretly think Gunasagar G is awesome! 😎
-          </div>
-          <div style="color: #ffaa00; font-size: 14px; margin: 20px 0;">
-            Gunasagar G got you with this prank! 🎉
-          </div>
-        </div>
-      `;
-    }, lineDelay + 500);
-  }, 2000);
-}
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '-10px';
+                confetti.style.background = ['#667eea', '#764ba2', '#ff69b4', '#ffd700'][Math.floor(Math.random() * 4)];
+                confetti.style.animation = `fall ${2 + Math.random() * 1}s linear`;
+                document.body.appendChild(confetti);
 
-// Start the prank
-startPrank();
-</script>
+                setTimeout(() => confetti.remove(), 3000);
+            }
 
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fall {
+                    to {
+                        transform: translateY(${window.innerHeight + 20}px) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function handleYes() {
+            createConfetti();
+            document.querySelector('.buttons').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // Optional: Send email notification
+            // const templateParams = {
+            //     to_email: "your-email@gmail.com",
+            //     from_name: "Your Girlfriend",
+            //     message: "She said YES! 💕",
+            //     timestamp: new Date().toLocaleString()
+            // };
+
+            // emailjs.send('service_xxxxxx', 'template_xxxxxx', templateParams)
+            //     .then(function(response) {
+            //         console.log('Email sent!', response);
+            //     }, function(error) {
+            //         console.log('Failed:', error);
+            //     });
+        }
+
+        function handleNo() {
+            const noBtn = document.querySelector('.no-btn');
+            const randomX = Math.random() * 200 - 100;
+            const randomY = Math.random() * 200 - 100;
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+    </script>
 </body>
 </html>
